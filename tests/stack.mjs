@@ -11,7 +11,7 @@ export async function freePort() {
   await new Promise((r) => s.close(r));
   return port;
 }
-export async function startStack() {
+export async function startStack({ includeVector = true } = {}) {
   const home = await mkdtemp(join(tmpdir(), "delta-vector-live-")),
     port = await freePort(),
     mcpPort = await freePort(),
@@ -82,17 +82,20 @@ export async function startStack() {
     await wait(async () =>
       (await client.call("core.components")).some((c) => c.id === "storage"),
     );
-    const vectorToken = await token("dev.delta.vector", [
-      "register:vector",
-      "call:storage.document_get",
-      "call:storage.document_put",
-    ]);
-    let vector = start("vector", "node", ["server/main.mjs"], {
-      DELTA_TOKEN: vectorToken,
-    });
-    await wait(async () =>
-      (await client.call("core.components")).some((c) => c.id === "vector"),
-    );
+    let vectorToken, vector;
+    if (includeVector) {
+      vectorToken = await token("dev.delta.vector", [
+        "register:vector",
+        "call:storage.document_get",
+        "call:storage.document_put",
+      ]);
+      vector = start("vector", "node", ["server/main.mjs"], {
+        DELTA_TOKEN: vectorToken,
+      });
+      await wait(async () =>
+        (await client.call("core.components")).some((c) => c.id === "vector"),
+      );
+    }
     start("mcp", "node", ["../delta-mcp/server/main.mjs"], {
       DELTA_TOKEN: admin,
       DATA_DIR: join(home, "mcp"),
@@ -111,6 +114,7 @@ export async function startStack() {
       stop,
       wait,
       async restartVector() {
+        if (!vector) throw Error("Vector was not started by this test stack");
         vector.kill("SIGKILL");
         await new Promise((r) => setTimeout(r, 250));
         vector = start("vector", "node", ["server/main.mjs"], {

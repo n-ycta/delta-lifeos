@@ -36,6 +36,15 @@ CORE_BINARY=/path/to/delta CHROMIUM_PATH=/path/to/chromium npm run test:browser
 
 These commands create disposable Core/Storage/MCP profiles and real service calls. The test host's loopback API proxy is test-only; never deploy it publicly. Browser tests use the real UI channel and a test parent rather than claiming released-host installation coverage.
 
+Catalog acceptance additionally requires a sibling `delta-web` checkout with its dependencies installed and the current shared UI checkout (including `tests/catalog-console.fixture.tsx`):
+
+```sh
+CORE_BINARY=/path/to/delta CHROMIUM_PATH=/path/to/chromium npm run test:catalog
+```
+
+This test downloads the actual public Core registry and published service/UI release, verifies installation through the real Core and Web installers, and opens the released isolated iframe inside the real Console. It writes a journal entry through the real Web broker/Core/Storage, adds a Calendar widget, saves its dashboard through the production Web handlers, and verifies reload at desktop and mobile widths. The Console source is served by Vite; this is not a physical-device or installed-host-release test. All credentials and data belong to the disposable test stack. The acceptance-only loopback gateway must never be exposed publicly.
+
+
 ## Service
 
 `server/main.mjs` uses supervisor-provided `DELTA_URL` / `DELTA_TOKEN`. Scopes: `register:vector`, `call:storage.document_get`, `call:storage.document_put`. Keep the service token private; it never enters plugin frames. `STORAGE_COMPONENT` defaults to `storage`; optional `STORAGE_NODE` chooses an existing reachable storage node. File persistence is explicit with `VECTOR_STORAGE=file` and `DATA_DIR`; it is intended for development or an intentional standalone deployment, never an automatic fallback on Storage failure.

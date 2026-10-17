@@ -11,7 +11,8 @@
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node tests/browser.mjs",
     "test:integration": "node tests/integration.mjs",
-    "package:plugin": "npm run build && node scripts/package.mjs"
+    "package:plugin": "npm run build && node scripts/package.mjs",
+    "test:catalog": "node tests/catalog-install.mjs"
   },
   "dependencies": {
     "@delta/ui": "file:vendor/delta-ui-sdk.tgz",
