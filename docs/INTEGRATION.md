@@ -14,3 +14,12 @@
 `tests/integration.mjs`: real Core registration/routing, real Storage documents, process restart, existing MCP catalog and scoped calls/revocation.
 
 `tests/browser.mjs`: real SDK source/origin/channel bridge with a test parent, real Core/Storage writes, CRUD, theme inheritance, RU/EN, desktop/mobile/narrow panels, error retention and two distinct simultaneous surfaces. This is not physical-device or released-host acceptance.
+
+## Published host changes
+
+The required source changes are published in:
+
+- [Delta UI SDK and Vector broker grants](https://github.com/n-ycta/delta-ui/commit/e319c2da5520baa6c4073fac11d3f752ceea98a1)
+- [Delta Web Vector authorization](https://github.com/n-ycta/delta-web/commit/e0da2466c95f6c1e5a47f6f85856c6cd84b3e43b)
+
+Use compatible host releases containing these changes. A GitHub commit or a plugin release does not prove that an installed Web/Desktop/Android host has been updated. The bundled SDK snapshot corresponds to the shared SDK sources in the linked UI commit.

@@ -4,7 +4,7 @@ A plugin-first personal workspace for tasks, journal, calendar, practices, proje
 
 ## Status
 
-Version 0.1.0 is an initial implementation. Source publication is not an installed or published official catalog release. The UI requires the matching host API allowlist patch supplied in the handoff. Installing this source does not update existing Web/Desktop/Android binaries.
+Version 0.1.0 is an initial implementation. Source publication is not an installed or published official catalog release. The UI requires the matching host changes linked in `docs/INTEGRATION.md`. Installing this source does not update existing Web/Desktop/Android binaries.
 
 ## Runtime
 
