@@ -391,7 +391,7 @@ function render() {
           )
           .join(
             "",
-          )}</nav><div class="sidebar-foot"><span class="dot" title="${online ? "Delta" : "Offline"}"></span> Delta LifeOS <span class="meta">0.1</span></div></aside>`
+          )}</nav><div class="sidebar-foot"><span class="dot" title="${online ? "Delta" : "Offline"}"></span> Delta LifeOS <span class="meta">0.2.0</span></div></aside>`
       : ""
   }<main class="main"><header class="topbar"><div class="crumbs">LifeOS <span class="sep">/</span> <span class="cur">${t(view)}</span></div><div class="top-actions"><button id="refresh" class="icon-btn" aria-label="${t("refresh")}">${icon("arrow-clockwise")}</button>${!compact ? `<button id="lang" class="icon-btn" aria-label="${t("language")}">${icon("translate")}</button>` : ""}</div></header><div class="page">${view !== "today" ? `<div class="page-head"><h1 class="page-title">${t(view)}</h1></div>` : ""}<div id="notice" class="notice" role="alert" ${notice ? "" : "hidden"}>${e(notice)}</div>${online ? body() : `<section class="panel empty"><h2>${host ? t("connection") : t("connect")}</h2><button id="retry">${t("retry")}</button></section>`}</div></main></div><dialog id="editor"><form id="editor-form"></form></dialog>`;
   sharedMarkup();
