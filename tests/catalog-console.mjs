@@ -123,6 +123,7 @@ export async function verifyCatalogConsole(stack, api) {
       assert.match(await appFrame.locator('#body').inputValue(),/app switch persistence/);
       await page.screenshot({path:`${output}/lifeos-app-tab-${width}.png`,animations:'disabled'});
       await page.locator('.dx-dock button').filter({has:page.locator('[data-kind="console"]')}).first().click();
+      await page.evaluate(()=>{location.hash='#/dashboards'});
       const card = page.locator(
         'a.plug[href="#/dashboards/gen_ui_dev.delta.lifeos"]',
       );
