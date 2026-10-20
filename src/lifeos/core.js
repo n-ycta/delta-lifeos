@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s),g=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const uid=()=>globalThis.crypto?.randomUUID?.()||Math.random().toString(36).slice(2,9),p2=n=>String(n).padStart(2,'0');
+const uid=()=>window.DeltaLifeOS.id(),p2=n=>String(n).padStart(2,'0');
 const ymd=d=>{d=d||new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())},pd=s=>{const[a,b,c]=s.split('-');return new Date(a,b-1,c)},addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)},today=()=>window.DeltaLifeOS.date();
 const P={book:'notebook',check:'check-square',repeat:'repeat',diamond:'sketch-logo',user:'user-circle',tree:'tree-structure',cal:'calendar-blank',chart:'chart-bar',clock:'clock',trash:'trash',x:'x',dl:'download-simple',ul:'upload-simple',l:'caret-left',r:'caret-right',edit:'pencil-simple',mv:'arrow-right',cfg:'sliders-horizontal'};
 const ic=(n,w)=>`<svg class="i" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><use href="#ph-${P[n]||n}"/></svg>`;
@@ -44,12 +44,16 @@ const PRE=[{name:'Сон, ч',type:'number'},{name:'Настроение',type:'
 function closeDD(){document.querySelectorAll('.dm').forEach(m=>m.remove())}
 
 const catChips=v=>S.cats.map(c=>`<button type="button" class="${c==v?'on':''}" data-a="pickC" data-x="${esc(c)}">${esc(c)}</button>`).join('')+`<button type="button" class="ad" data-a="newCat">${ic('plus')} Категория</button>`;
-const catPick=(id,v)=>`<div class="chips2 pk" id="${id}" data-v="${esc(v||'')}">${catChips(v)}</div>`;
+const categoryOptions=v=>'<option value="">Без категории</option>'+S.cats.map(c=>`<option value="${esc(c)}" ${c===v?'selected':''}>${esc(c)}</option>`).join('');
+const categoryControl=(id,v)=>`<select id="${id}_select" aria-label="Категория" data-c="category">${categoryOptions(v)}</select><button type="button" data-a="newCat">${ic('plus')} Категория</button>`;
+const catPick=(id,v)=>`<div class="category-picker pk" id="${id}" data-v="${esc(v||'')}">${categoryControl(id,v)}</div>`;
+
 
 const A={},C={};
 
 A.pickC=(x,el)=>{const p=el.parentNode,on=p.dataset.v===x;p.dataset.v=on?'':x;p.querySelectorAll('button:not(.ad)').forEach(b=>b.classList.toggle('on',!on&&b.dataset.x===x))};
-A.newCat=()=>modal('Новая категория','<div class="fr"><label>Название</label><input id="m_cn"></div>',()=>{const n=g('m_cn').value.trim();if(!n)throw Error('Введите название');if(!S.cats.includes(n))S.cats.push(n);save();const pk=[...document.querySelectorAll('.pk')];pk.forEach(p=>p.innerHTML=catChips(p.dataset.v));const l=pk.at(-1);if(l){l.dataset.v=n;l.innerHTML=catChips(n)}});
+A.newCat=(x,el)=>{const target=el?.closest('.pk');return modal('Новая категория','<div class="fr"><label>Название</label><input id="m_cn"></div>',()=>{const n=g('m_cn').value.trim();if(!n)throw Error('Введите название');if(!S.cats.includes(n))S.cats.push(n);if(target?.isConnected)target.dataset.v=n;document.querySelectorAll('.pk').forEach(p=>p.innerHTML=categoryControl(p.id,p.dataset.v));save();deltaControls()})};
+C.category=(v,el)=>{el.closest('.pk').dataset.v=v};
 A.fieldsM=()=>fieldsM();A.rulesM=()=>rulesM();A.newF=()=>fieldM();A.editF=x=>fieldM(x);
 A.addToE=x=>{saveE(1);extra.push(x);render();fieldsM()};
 A.saveE=()=>saveE();A.dlE=()=>{saveE(1);download(D+'.md',S.entries[D]||dumpMd({date:D},''))};

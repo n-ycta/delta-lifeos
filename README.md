@@ -66,3 +66,9 @@ One LifeOS navigation across retained domain editors. Uses the same public Conso
 - Pending snapshots are journaled locally before transport, scoped to the parent host origin. Recovery is explicit; a draft never silently overwrites server data.
 - A lost commit acknowledgement is reconciled by the same write ID; stale background reads cannot overwrite edits.
 - Calendar cells and content rows no longer inherit compact button heights. Planner help starts collapsed; select icons have explicit 16px geometry.
+
+## 0.3.3 acceptance
+
+`npm run test:habits` checks category creation/selection/editing, multiple habit rows and persistence with Web Crypto secure-context APIs disabled. `CORE_BINARY=/path/to/delta npm run test:filled` uses an isolated real Core and real Storage file handlers, checks a LifeOS service restart, and captures populated routes at 1440/390px. The live harness expects sibling checkouts `delta_db` (with its dependencies installed); MCP is optional for this harness. No production profile is used.
+
+A red save status is never treated as success: export before discarding unsaved data. Profile exposes the error code and retry. HTTPS or a trusted VPN remains recommended; compatibility fallbacks do not make HTTP confidential. Native Android APK/device behavior is verified separately by the host release pipeline, not by the browser tests.

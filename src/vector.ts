@@ -1,3 +1,4 @@
+import {randomId} from '@delta/ui/sdk/random';
 import {
   connectPlugin,
   applyThemeTokens,
@@ -86,7 +87,7 @@ const today = () =>
     month: "2-digit",
     day: "2-digit",
   }).format(new Date());
-const requestId = () => crypto.randomUUID();
+const requestId = () => randomId();
 const pending = new Map<string, string>();
 async function mutation(op: string, args: any) {
   const key = JSON.stringify({ op, args });

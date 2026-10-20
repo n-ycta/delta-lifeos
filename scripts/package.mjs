@@ -38,7 +38,7 @@ await cp("README.md", stage + "/README.md");
 await writeFile(stage + "/manifest.json", JSON.stringify(manifest, null, 2));
 const pkg = {
   name: "delta-lifeos-service",
-  version: "0.3.2",
+  version: "0.3.3",
   type: "module",
   private: true,
   scripts: { start: "node server/main.mjs" },

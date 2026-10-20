@@ -10,6 +10,7 @@ try {
   await mkdir(dir, { recursive: true });
   for (const name of [
     "src/sdk/client.ts",
+    "src/sdk/random.ts",
     "src/sdk/icons.ts",
     "src/sdk/controls.ts",
     "src/sdk/styles.css",
@@ -27,7 +28,7 @@ try {
     join(dir, "package.json"),
     JSON.stringify({
       name: "@delta/ui",
-      version: "0.3.2-lifeos.1",
+      version: "0.3.3-lifeos.1",
       type: "module",
       private: true,
       license: "Apache-2.0",
@@ -35,6 +36,7 @@ try {
         "Local snapshot of the reviewed Delta UI SDK source; not a published SDK release",
       exports: {
         "./sdk/client": "./src/sdk/client.ts",
+        "./sdk/random": "./src/sdk/random.ts",
         "./sdk/icons": "./src/sdk/icons.ts",
         "./sdk/controls": "./src/sdk/controls.ts",
         "./sdk/styles.css": "./src/sdk/styles.css",

@@ -1,6 +1,6 @@
 {
   "name": "delta-lifeos",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
@@ -12,7 +12,9 @@
     "test:browser": "node tests/browser.mjs",
     "test:integration": "node tests/integration.mjs",
     "package:plugin": "npm run build && node scripts/package.mjs",
-    "test:catalog": "node tests/catalog-install.mjs"
+    "test:catalog": "node tests/catalog-install.mjs",
+    "test:habits": "node tests/habits-regression.mjs",
+    "test:filled": "node tests/filled-browser.mjs"
   },
   "dependencies": {
     "@delta/ui": "file:vendor/delta-ui-sdk.tgz",
@@ -20,7 +22,8 @@
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@fontsource/literata": "^5.3.0",
     "@fontsource/manrope": "^5.3.0",
-    "@fontsource/onest": "^5.3.1"
+    "@fontsource/onest": "^5.3.1",
+    "@noble/hashes": "1.7.2"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",

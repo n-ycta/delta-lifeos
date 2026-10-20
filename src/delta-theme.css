@@ -73,3 +73,15 @@ body[data-surface] #lifeos-shell .content{padding:0}
  #lifeos-shell .planner-scope .delta-select-trigger{height:44px;min-height:44px!important}
  #lifeos-shell .planner-help>summary{min-height:44px;align-content:center}
 }
+
+#lifeos-shell .category-picker{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+#lifeos-shell .category-picker>.delta-select{flex:1;min-width:160px}
+#lifeos-shell .habit-week{flex-wrap:nowrap;gap:4px}
+#lifeos-shell .habit-week>div{flex:1;min-width:0}
+#lifeos-shell .habit-week .dh{width:44px;min-height:44px}
+@media(max-width:800px){#lifeos-shell .habit-week{width:100%;gap:3px}#lifeos-shell .habit-week .dh{width:100%;min-width:36px;padding:3px}}
+
+#lifeos-shell .rt button.on{background:var(--selected);color:var(--accent);border-color:var(--accent)}
+#lifeos-shell .calendar-ledger{display:flex;align-items:center;gap:2px;white-space:nowrap}
+#lifeos-shell .calendar-ledger .i{width:12px;height:12px;flex:none}
+@media(max-width:800px){#lifeos-shell button.cd{padding:6px 4px}#lifeos-shell .calendar-ledger{font-size:10px;gap:1px}#lifeos-shell .calendar-ledger .i{width:10px;height:10px}}

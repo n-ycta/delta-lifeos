@@ -11,7 +11,7 @@ export async function freePort() {
   await new Promise((r) => s.close(r));
   return port;
 }
-export async function startStack({ includeLifeOS = true } = {}) {
+export async function startStack({ includeLifeOS = true, includeMCP = true } = {}) {
   const home = await mkdtemp(join(tmpdir(), "delta-lifeos-live-")),
     port = await freePort(),
     mcpPort = await freePort(),
@@ -96,7 +96,7 @@ export async function startStack({ includeLifeOS = true } = {}) {
         (await client.call("core.components")).some((c) => c.id === "lifeos"),
       );
     }
-    start("mcp", "node", ["../delta-mcp/server/main.mjs"], {
+    if (includeMCP) { start("mcp", "node", ["../delta-mcp/server/main.mjs"], {
       DELTA_TOKEN: admin,
       DATA_DIR: join(home, "mcp"),
       PORT: String(mcpPort),
@@ -104,6 +104,7 @@ export async function startStack({ includeLifeOS = true } = {}) {
     await wait(async () =>
       (await client.call("core.components")).some((c) => c.id === "mcp"),
     );
+    }
     return {
       client,
       home,
