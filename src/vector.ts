@@ -378,25 +378,15 @@ function body() {
   }
 }
 function render() {
-  document.documentElement.lang = lang;
-  const compact = !!surface;
-  root.innerHTML = `<div class="layout ${compact ? "embedded" : ""}">${
-    !compact
-      ? `<aside class="sidebar"><div class="brand"><span class="lifeos-logo">${icon("compass")}</span><div class="brand-text"><strong class="brand-name">LifeOS</strong><small class="brand-sub">Delta</small></div></div><button class="btn" data-return-lifeos>← LifeOS</button><nav class="nav" aria-label="LifeOS">${Object.keys(
-          icons,
-        )
-          .map(
-            (x) =>
-              `<button data-view="${x}" class="nav-item ${view === x ? "active" : ""}" aria-current="${view === x ? "page" : "false"}"><span aria-hidden="true">${icon(icons[x])}</span>${t(x)}</button>`,
-          )
-          .join(
-            "",
-          )}</nav><div class="sidebar-foot"><span class="dot" title="${online ? "Delta" : "Offline"}"></span> Delta LifeOS <span class="meta">0.2.1</span></div></aside>`
-      : ""
-  }<main class="main"><header class="topbar"><div class="crumbs">LifeOS <span class="sep">/</span> <span class="cur">${t(view)}</span></div><div class="top-actions"><button id="refresh" class="icon-btn" aria-label="${t("refresh")}">${icon("arrow-clockwise")}</button>${!compact ? `<button id="lang" class="icon-btn" aria-label="${t("language")}">${icon("translate")}</button>` : ""}</div></header><div class="page">${view !== "today" ? `<div class="page-head"><h1 class="page-title">${t(view)}</h1></div>` : ""}<div id="notice" class="notice" role="alert" ${notice ? "" : "hidden"}>${e(notice)}</div>${online ? body() : `<section class="panel empty"><h2>${host ? t("connection") : t("connect")}</h2><button id="retry">${t("retry")}</button></section>`}</div></main></div><dialog id="editor"><form id="editor-form"></form></dialog>`;
-  sharedMarkup();
-  wire();
+ document.documentElement.lang=lang;
+ root.innerHTML=`<div class="native-content">${view!=="today"?`<header class="page-head"><h1 class="page-title">${t(view)}</h1><div class="page-actions" id="native-actions"></div></header>`:""}<div id="notice" class="banner warn" role="alert" ${notice?"":"hidden"}>${e(notice)}</div>${online?body():`<section class="panel empty"><h2>${t("connection")}</h2><button id="retry">${t("retry")}</button></section>`}</div><dialog id="editor"><form id="editor-form"></form></dialog>`;
+ const toolbar=root.querySelector('.toolbar');
+ if(toolbar&&['practices','projects','skills'].includes(view)){
+  const button=toolbar.querySelector('button[data-new]');if(button){button.classList.remove('primary');button.classList.add('accent');root.querySelector('#native-actions')?.append(button)}toolbar.remove();
+ }
+ sharedMarkup();wire();
 }
+
 function sharedMarkup() {
   root.querySelectorAll<HTMLButtonElement>("button").forEach((b) => {
     if (

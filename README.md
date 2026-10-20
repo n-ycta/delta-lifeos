@@ -1,6 +1,6 @@
 # Delta LifeOS
 
-Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.2.1.
+Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.3.0.
 
 ## Included
 
@@ -22,9 +22,9 @@ The process registers `lifeos.*` capabilities with Core; the UI receives only ex
 
 ## Migration from Vector
 
-The Git repository is renamed, not deleted: commit history is preserved. `delta_vector/state` is copied to `delta_lifeos_backup/state` and then `delta_lifeos/state` on first load. The original namespace is left intact. File mode similarly preserves `vector.json` and `vector.pre-lifeos.json` before creating `lifeos.json`. Tasks, skills and existing entry IDs are retained. Existing user-defined criteria and LifeOS settings reside alongside the retained Vector entities.
+The Git repository is renamed, not deleted: commit history is preserved. When the credential identity is unchanged, `delta_vector/state` is copied to `delta_lifeos_backup/state` and then `delta_lifeos/state` on first load. The original namespace is left intact. File mode similarly preserves `vector.json` and `vector.pre-lifeos.json` before creating `lifeos.json`. Tasks, skills and existing entry IDs are retained. Existing user-defined criteria and LifeOS settings reside alongside the retained Vector entities.
 
-Install LifeOS against the same authoritative Storage as Vector. Stop the old Vector service before actively editing the migrated data; simultaneous old/new services are not a replication mechanism. Verify LifeOS, then remove the old runtime. Do not delete the old data namespace. Host workbench identity migration preserves layout/surface settings and keeps a pre-migration browser backup.
+Install LifeOS against the same authoritative Storage as Vector. Stop the old Vector service before actively editing the migrated data; simultaneous old/new services are not a replication mechanism. Verify LifeOS, then remove the old runtime. Do not delete the old data namespace. For the normal `dev.delta.vector` → `dev.delta.lifeos` credential change, run the Core repair command: it uses short-lived owner-authorized scoped credentials to copy and verify isolated documents, then revokes them. It refuses to overwrite existing LifeOS data. Host workbench identity migration preserves layout/surface settings and keeps a pre-migration browser backup.
 
 For existing standalone LifeOS data, use its ZIP export and the LifeOS profile import. Import is explicit; the plugin never silently replaces server data with browser-local state.
 
@@ -55,3 +55,7 @@ Open the app through a Delta host. A top-level standalone plugin window intentio
 Each diary entry is a Markdown document in the workspace and becomes a separate `.md` in ZIP export. The backend uses the current Delta Storage document contract (the inherited document capacity is enforced), not browser-local authority. Workspace uploads are chunked under bridge request limits, checksummed, revision-checked and committed atomically to Storage. Interrupted uploads never replace the workspace. Optional browser folder export still requires a user-selected folder and browser support.
 
 Rules are optional, project-limit warnings can be disabled with 0, and skill progression is manual by default. Background browser closure is not a scheduler: overdue checks run when the app is open. No built-in AI scorer, cloud replication or automatic external verification of evidence is claimed.
+
+## 0.3.0 repair batch
+
+One LifeOS navigation across retained domain editors. Uses the same public Console control classes, type scale, geometry and host tokens. Root FrameHost opens it through `/apps/dev.delta.lifeos`, exactly as Media; running frames survive switching apps. LifeOS registers while waiting for Storage and reconnects without loading empty defaults.

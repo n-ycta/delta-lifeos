@@ -9,3 +9,40 @@ body[data-surface] #nav,body[data-surface] .bottom-nav,body[data-surface] .mobil
 @media(max-width:800px){#lifeos-shell #nav{width:250px}#lifeos-shell main{margin:0;width:100%;padding:0 16px 92px}#lifeos-shell .topbar{height:40px}#lifeos-shell button,#lifeos-shell button.ib,#lifeos-shell input:not([type=checkbox]),#lifeos-shell select{min-height:44px}#lifeos-shell button.ib{width:44px}#lifeos-shell .mobile-top{height:54px}#lifeos-shell .bottom-nav{background:var(--surface)}#lifeos-shell .mobile-top b{font-size:16px}#lifeos-shell .stat-grid{gap:8px}#lifeos-shell .card,#lifeos-shell .sheet{padding:16px}}
 
 :root:root[data-theme=dark]{color-scheme:dark}:root:root[data-theme=light]{color-scheme:light}
+
+/* Console component geometry, applied to LifeOS's independent app navigation. */
+#lifeos-shell main{padding:0;--lifeos-sidebar:228px;margin-left:var(--lifeos-sidebar);width:calc(100% - var(--lifeos-sidebar))}
+#lifeos-shell #nav{width:228px;padding:0 8px 12px;background:var(--bg)}
+#lifeos-shell .br{height:48px;padding:0 8px;display:flex;align-items:center;border-bottom:1px solid var(--rule);font-size:13px;gap:10px;margin-bottom:10px}
+#lifeos-shell .brand-mark:before,#lifeos-shell .brand-mark:after{display:none}
+#lifeos-shell .topbar{height:48px;margin:0;padding:0 20px;border-bottom:1px solid var(--rule)}
+#lifeos-shell .content{padding:20px 24px 48px;max-width:1680px;margin:0 auto;overflow:visible}
+#lifeos-shell .page-head{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+#lifeos-shell .page-title,#vector-app .page-title{font-size:var(--fs-2xl);line-height:1.15;font-family:var(--font-heading);font-weight:600;letter-spacing:-.02em}
+#lifeos-shell .page-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+#lifeos-shell .btn{height:var(--ctl);min-height:var(--ctl);padding:0 11px;font-size:12.5px;border-radius:var(--r-md);gap:6px;border-color:var(--rule-strong)}
+#lifeos-shell .btn.ghost{background:transparent;border-color:transparent}
+#lifeos-shell .btn.accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#lifeos-shell .btn.icon{width:var(--ctl);min-width:var(--ctl);padding:0}
+#lifeos-shell .seg{height:var(--ctl);padding:0;gap:0;background:var(--surface);border-color:var(--rule-strong);border-radius:var(--r-md)}
+#lifeos-shell .seg button{height:100%;min-height:0;border:0;border-radius:0;padding:0 10px;font-family:var(--font-mono);font-size:12px;background:transparent;border-right:1px solid var(--rule)}
+#lifeos-shell .seg button.on{background:var(--selected);color:var(--ink)}
+#lifeos-shell .input,#lifeos-shell .select{height:var(--ctl);min-height:var(--ctl);padding:0 9px;border-color:var(--rule-strong);border-radius:var(--r-md)}
+#lifeos-shell #nav a{height:30px;min-height:30px;border-radius:var(--r-md);padding:0 10px;font-size:12.5px;margin-bottom:2px;position:relative;white-space:normal}
+#lifeos-shell #nav a.on:before{content:'';position:absolute;left:-8px;top:7px;bottom:7px;width:2px;background:var(--accent);border-radius:2px}
+#vector-app{height:auto;min-height:0;width:100%}
+#vector-app .native-content{padding:0}
+#vector-app .card-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));align-items:start;gap:12px}
+#vector-app .entity-card{padding:0;border-radius:var(--r-lg)}
+#vector-app .entity-card>.section-heading{padding:10px 14px;border-bottom:1px solid var(--rule);margin:0;min-height:42px}
+#vector-app .entity-card>.section-heading h2{font-size:13px;font-weight:600}
+#vector-app .entity-card>p:empty{display:none}
+#vector-app .entity-card>p{padding:12px 14px;margin:0;min-height:0}
+#vector-app .entity-card>.form-foot{padding:10px 14px;min-height:42px;background:var(--surface-2)}
+#vector-app .native-content .toolbar{margin-bottom:16px}
+#vector-app .btn.accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+body[data-surface] #vector-app .native-content{padding:12px}
+body[data-surface] #lifeos-shell .content{padding:0}
+@media(max-width:800px){#lifeos-shell main{margin:0;width:100%}#lifeos-shell #nav{width:250px}#lifeos-shell .content{padding:20px 16px 96px}#lifeos-shell .mobile-top{padding:0 16px}#lifeos-shell .page-title{font-size:var(--fs-2xl)}#lifeos-shell .btn,#lifeos-shell .btn.icon,#lifeos-shell .input,#lifeos-shell .select{min-height:44px}#lifeos-shell .btn.icon{width:44px}#lifeos-shell #nav a{min-height:44px}#lifeos-shell .seg{height:44px}}
+
+#vector-app .entity-card{overflow:hidden}

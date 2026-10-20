@@ -16,7 +16,7 @@ async function start(){if(parent===window||!params.get('parentOrigin')){main.inn
  const settings=await host.call('lifeos.settings_get',{}) as {timezone:string};
  const date=()=>new Intl.DateTimeFormat('en-CA',{timeZone:settings.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const present=(c:AppContext)=>{applyThemeTokens(c.tokens);document.documentElement.dataset.theme=c.theme;document.documentElement.lang=c.language;};present(host.context);host.onPresentation(present);
- const showLegacy=async(view:string)=>{if(window.DeltaLifeOS.flush)await window.DeltaLifeOS.flush();shell.hidden=true;legacy.hidden=false;await openLegacy(host,view);};
+ const showLegacy=async(view:string)=>{if(window.DeltaLifeOS.flush)await window.DeltaLifeOS.flush();if(surface){shell.hidden=true;legacy.hidden=false}else{shell.hidden=false;window.dispatchEvent(new CustomEvent('delta-lifeos-native',{detail:view}));document.getElementById('native-mount')!.append(legacy);legacy.hidden=false}await openLegacy(host,view);};
  window.DeltaLifeOS={host,date,legacy:showLegacy,surface,context:host.context};
  if(surface)document.body.dataset.surface=surface;
  const runtime=document.createElement('script');runtime.src=new URL('lifeos/runtime.js',location.href.split('?')[0]).href;runtime.onload=()=>{loaded=true;if(nativeSurfaces.has(surface))void showLegacy(surface).catch(error)};runtime.onerror=()=>error(Error('UI assets unavailable'));document.body.append(runtime);

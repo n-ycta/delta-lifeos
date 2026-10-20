@@ -109,13 +109,27 @@ export async function verifyCatalogConsole(stack, api) {
       await page.goto(
         `http://127.0.0.1:${server.httpServer.address().port}/__accept#/dashboards`,
       );
+      // Same dock/application route and persistent root FrameHost as Media.
+      const launcher=page.locator('.dx-dock button[title="Delta LifeOS"]');
+      await launcher.waitFor();await launcher.click();
+      const appFrame=page.frameLocator('iframe[title="dev.delta.lifeos"]').first();
+      await appFrame.locator('html[data-lifeos-connected=true]').waitFor({timeout:30000});
+      await appFrame.locator('#body').fill('LifeOS app switch persistence '+width);
+      await page.waitForTimeout(1200);
+      await appFrame.locator('html').evaluate(()=>{window.__lifeosFrameMarker='same-running-frame'});
+      await page.locator('.dx-dock button').filter({has:page.locator('[data-kind="console"]')}).first().click();
+      await launcher.click();
+      assert.equal(await appFrame.locator('html').evaluate(()=>window.__lifeosFrameMarker),'same-running-frame');
+      assert.match(await appFrame.locator('#body').inputValue(),/app switch persistence/);
+      await page.screenshot({path:`${output}/lifeos-app-tab-${width}.png`,animations:'disabled'});
+      await page.locator('.dx-dock button').filter({has:page.locator('[data-kind="console"]')}).first().click();
       const card = page.locator(
         'a.plug[href="#/dashboards/gen_ui_dev.delta.lifeos"]',
       );
       await card.waitFor();
       await card.click();
       const frame = page
-        .frameLocator('iframe[title="dev.delta.lifeos"]')
+        .frameLocator('iframe[title="dev.delta.lifeos"][src*="surface=today"]')
         .first();
       try {
         await frame
