@@ -1,4 +1,4 @@
-# Verification for 0.3.0
+# Verification for 0.3.1
 
 - 18 backend tests passed, retaining Vector entity behavior plus shared workspace projections, durable restart, chunk boundaries, principal isolation, revisions, and legacy backup migration.
 - Real Delta Core 0.4.4 + real Delta Storage + MCP integration passed: component lifeos registers, task writes survive service restart, MCP discovers dev.delta.lifeos, scoped task access cannot read diary or settings, revocation works.
@@ -6,8 +6,8 @@
 - Shared Delta UI tests and production build pass, including exact LifeOS grants, denial of retired Vector grants, UI catalog/surface generation and workbench identity migration.
 - Delta Web's 66 server tests pass with the LifeOS allowlist.
 - Published 0.2.0 assets were installed by the actual Core installer and Web portable-app installer with checksum verification; application journal writes and Calendar widget add/save/reload passed through the real Console at 1440px and 390px.
-- 0.3.0 repairs the vendored SDK lock integrity/version; clean-cache npm ci, backend tests and production packaging are verified.
+- 0.3.1 repairs the vendored SDK lock integrity/version; clean-cache npm ci, backend tests and production packaging are verified.
 
 No claim is made that the user's already-running host has been upgraded remotely. The released host must include the updated shared UI and server broker. No physical iOS/Android device or power-loss simulation was performed.
 
-0.3.0 adds one navigation for all LifeOS modules, scoped retained editor CSS, exact Console control classes/geometry and delayed Storage registration recovery. Native domain screens no longer have a separate sidebar.
+0.3.1 adds one navigation for all LifeOS modules, scoped retained editor CSS, exact Console control classes/geometry and delayed Storage registration recovery. Native domain screens no longer have a separate sidebar.

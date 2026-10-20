@@ -13,14 +13,14 @@ try {
   for (let attempt = 0; attempt < 60; attempt++) {
     const catalog = await stack.client.call("packages.catalog");
     item = catalog.plugins.find((p) => p.id === "dev.delta.lifeos");
-    if (item?.version === "0.3.0") break;
+    if (item?.version === "0.3.1") break;
     await new Promise((r) => setTimeout(r, 3000));
   }
   assert(
     item,
     "LifeOS must be visible in the actual public Core install catalog",
   );
-  assert.equal(item.version, "0.3.0");
+  assert.equal(item.version, "0.3.1");
   const plan = await stack.client.call("packages.plan", { id: item.id });
   assert.deepEqual(
     plan.items.map((i) => i.id),

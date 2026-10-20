@@ -1,6 +1,6 @@
 # Delta LifeOS
 
-Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.3.0.
+Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.3.1.
 
 ## Included
 
@@ -56,6 +56,6 @@ Each diary entry is a Markdown document in the workspace and becomes a separate 
 
 Rules are optional, project-limit warnings can be disabled with 0, and skill progression is manual by default. Background browser closure is not a scheduler: overdue checks run when the app is open. No built-in AI scorer, cloud replication or automatic external verification of evidence is claimed.
 
-## 0.3.0 repair batch
+## 0.3.1 repair batch
 
 One LifeOS navigation across retained domain editors. Uses the same public Console control classes, type scale, geometry and host tokens. Root FrameHost opens it through `/apps/dev.delta.lifeos`, exactly as Media; running frames survive switching apps. LifeOS registers while waiting for Storage and reconnects without loading empty defaults.

@@ -128,7 +128,7 @@ export const surfaces = [
 }));
 export const manifest = {
   id: "lifeos",
-  version: "0.3.0",
+  version: "0.3.1",
   description: "Tasks, journal, skills, time, projects and practices",
   capabilities: specs.map((s) => ({
     ...s,
@@ -139,7 +139,7 @@ export const manifest = {
     ui: {
       id: "dev.delta.lifeos",
       name: "Delta LifeOS",
-      version: "0.3.0",
+      version: "0.3.1",
       contract: "^1.5.0",
       publisher: "Delta",
       description: "Tasks, journal, skills and time.",
@@ -191,7 +191,7 @@ export const manifest = {
 export const appManifest = {
   id: "dev.delta.lifeos",
   name: "Delta LifeOS",
-  version: "0.3.0",
+  version: "0.3.1",
   entry: "index.html",
   runtime: {
     execution: "web",
