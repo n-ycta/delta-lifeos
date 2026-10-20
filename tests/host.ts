@@ -6,6 +6,7 @@ const q = new URLSearchParams(location.search),
   skin = SKINS[(q.get("skin") || "latte") as SkinId],
   plugin = q.get("plugin")!,
   lang = q.get("lang") === "en" ? "en" : "ru";
+const readyAt=Date.now()+Number(q.get("delay")||0);
 const parts = q.get("multi") ? ["today", "journal"] : [q.get("surface") || ""];
 for (const surface of parts) {
   const iframe = document.createElement("iframe");
@@ -39,7 +40,7 @@ for (const surface of parts) {
     if (
       ev.source === iframe.contentWindow &&
       ev.origin === url.origin &&
-      ev.data?.type === "delta:ready"
+      ev.data?.type === "delta:ready" && Date.now()>=readyAt
     )
       iframe.contentWindow!.postMessage(
         {

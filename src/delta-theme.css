@@ -46,3 +46,30 @@ body[data-surface] #lifeos-shell .content{padding:0}
 @media(max-width:800px){#lifeos-shell main{margin:0;width:100%}#lifeos-shell #nav{width:250px}#lifeos-shell .content{padding:20px 16px 96px}#lifeos-shell .mobile-top{padding:0 16px}#lifeos-shell .page-title{font-size:var(--fs-2xl)}#lifeos-shell .btn,#lifeos-shell .btn.icon,#lifeos-shell .input,#lifeos-shell .select{min-height:44px}#lifeos-shell .btn.icon{width:44px}#lifeos-shell #nav a{min-height:44px}#lifeos-shell .seg{height:44px}}
 
 #vector-app .entity-card{overflow:hidden}
+
+/* Form controls are not calendar cells or content rows. Never impose --ctl on them. */
+#lifeos-shell .cg{grid-template-rows:auto;grid-auto-rows:minmax(104px,auto);gap:6px}
+#lifeos-shell .cg>.day-head{min-height:32px;align-self:end}
+#lifeos-shell .cg{grid-template-rows:36px}
+#lifeos-shell button.cd{height:auto;min-height:104px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:5px;padding:10px;text-align:left;overflow:hidden}
+#lifeos-shell button.cd>b{line-height:1.4}
+#lifeos-shell button.block-row{height:auto;min-height:64px;justify-content:flex-start;padding:14px 0}
+#lifeos-shell .delta-select-trigger>svg{width:16px;height:16px;min-width:16px;flex:0 0 16px;display:block}
+#lifeos-shell .delta-select-trigger>span{flex:1;min-width:0;text-align:left}
+#lifeos-shell .planner-toolbar{gap:12px;margin:0 0 12px}
+#lifeos-shell .planner-scope{display:flex;align-items:center;gap:10px;flex:none;max-width:100%}
+#lifeos-shell .scope-caption{font-size:var(--fs-sm);color:var(--muted)}
+#lifeos-shell .planner-scope .delta-select{width:216px;max-width:100%;flex:none}
+#lifeos-shell .planner-scope .delta-select-trigger{height:36px;min-height:36px!important}
+#lifeos-shell .planner-help{margin:0 0 16px;color:var(--muted);font-size:var(--fs-sm);max-width:640px}
+#lifeos-shell .planner-help>summary{cursor:pointer;width:fit-content;min-height:28px;display:list-item;list-style-position:inside;padding:4px 0}
+#lifeos-shell .planner-help>p{padding:8px 0;margin:0;line-height:1.55}
+@media(max-width:800px){
+ #lifeos-shell .cg{grid-auto-rows:minmax(84px,auto);gap:4px}
+ #lifeos-shell button.cd{min-height:84px;padding:7px 5px;gap:4px;font-size:12px}
+ #lifeos-shell .planner-toolbar>.sp{display:none}
+ #lifeos-shell .planner-scope{width:100%;justify-content:space-between}
+ #lifeos-shell .planner-scope .delta-select{width:216px;flex:1;max-width:240px}
+ #lifeos-shell .planner-scope .delta-select-trigger{height:44px;min-height:44px!important}
+ #lifeos-shell .planner-help>summary{min-height:44px;align-content:center}
+}

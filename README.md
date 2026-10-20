@@ -59,3 +59,10 @@ Rules are optional, project-limit warnings can be disabled with 0, and skill pro
 ## 0.3.1 repair batch
 
 One LifeOS navigation across retained domain editors. Uses the same public Console control classes, type scale, geometry and host tokens. Root FrameHost opens it through `/apps/dev.delta.lifeos`, exactly as Media; running frames survive switching apps. LifeOS registers while waiting for Storage and reconnects without loading empty defaults.
+
+## 0.3.2 reliability fixes
+
+- Repeated host handshake announcements tolerate delayed listeners; RPC requests have a separate 35-second budget.
+- Pending snapshots are journaled locally before transport, scoped to the parent host origin. Recovery is explicit; a draft never silently overwrites server data.
+- A lost commit acknowledgement is reconciled by the same write ID; stale background reads cannot overwrite edits.
+- Calendar cells and content rows no longer inherit compact button heights. Planner help starts collapsed; select icons have explicit 16px geometry.
