@@ -359,7 +359,7 @@ function body() {
       return `<div class="toolbar"><p class="meta">${t(type === "practice" ? "minimum" : type === "project" ? "nextStep" : "evidence")}</p><button class="primary" data-new="${type}">${icon("plus")} ${t(type === "practice" ? "newPractice" : type === "project" ? "newProject" : "newSkill")}</button></div>${view === "projects" && settings.activeProjectLimit > 0 && summary.activeProjects > settings.activeProjectLimit ? `<p class="notice">${t("projectWarning")}</p>` : ""}<div class="card-grid">${cards(type)}</div>${more(type)}${type === "skill" ? more("evidence") : ""}`;
     }
     case "review":
-      return `<section class="panel"><span class="eyebrow">${e(summary.from)} — ${e(summary.to)}</span><h2>${t("review")}</h2><div class="stats">${[
+      return `<section class="panel review-summary"><div class="stats">${[
         ["completed", "completed"],
         ["recordedDays", "recordedDays"],
         ["practiceLogs", "practiceLogs"],
@@ -371,7 +371,7 @@ function body() {
         )
         .join(
           "",
-        )}</div></section><section class="panel"><h2>${t("direction")}</h2><button data-new="direction">${icon("plus")} ${t("add")}</button>${cards("direction")}${more("direction")}</section><section class="panel"><h2>${t("experiment")}</h2><button data-new="experiment">${icon("plus")} ${t("add")}</button>${cards("experiment")}${more("experiment")}</section>`;
+        )}</div></section><section class="panel review-section"><div class="section-heading"><h2>${t("direction")}</h2><button data-new="direction">${icon("plus")} ${t("add")}</button></div><div class="review-cards">${cards("direction")}</div>${more("direction")}</section><section class="panel review-section"><div class="section-heading"><h2>${t("experiment")}</h2><button data-new="experiment">${icon("plus")} ${t("add")}</button></div><div class="review-cards">${cards("experiment")}</div>${more("experiment")}</section>`;
     case "settings":
       return `<section class="panel"><form id="settings-form">${input("timezone", "timezone", settings.timezone, "text", 'required maxlength="80"')}<button type="button" id="use-timezone">${t("useTimezone")}</button>${select("locale", "language", ["ru", "en"], settings.locale, false)}${input("activeProjectLimit", "limit", settings.activeProjectLimit, "number", 'min="0" max="10000" required')}<button type="submit" class="primary">${t("save")}</button></form></section><section class="panel"><h2>${t("export")}</h2><p class="meta">${t("exportHint")}</p><form id="export-form">${select("entity", "exportType", ["task", "entry", "practice", "project", "direction", "skill", "evidence", "experiment"], "task")}<button type="submit">${icon("download-simple")} ${t("export")}</button></form></section>`;
     default:

@@ -553,7 +553,7 @@ export async function createLifeOS({
     };
   };
   h["lifeos.status"] = () => ({
-    version: "0.3.2",
+    version: "0.3.4",
     revision: state.revision,
     storage: "connected",
     counts: Object.fromEntries(entities.map((e) => [e, readRows(e).length])),

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.4
+
+- Replace dot placeholders and tall calendar strips with compact day cells, deadline counts and a readable selected-day agenda.
+- Show diamond icons consistently; turn mobile daily statistics into labelled cards without clipped columns.
+- Add a themed, keyboard-accessible date picker throughout LifeOS and its workspace forms.
+- Replace the skill icon name selector with a visual SVG icon grid.
+- Correct review-panel spacing on mobile and desktop.
+- Synchronize plugin, app and service version metadata (0.3.3 release service metadata was stale).
+
 ## 0.3.3
 
 - Keep every habit row inside its card; align weekly controls on mobile.

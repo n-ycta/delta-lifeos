@@ -1,3 +1,4 @@
+import {datePickers} from './date-picker';
 import {randomId} from '@delta/ui/sdk/random';
 import {sha256} from '@noble/hashes/sha256';
 import {bytesToHex} from '@noble/hashes/utils';
@@ -13,7 +14,7 @@ const shell=document.getElementById('lifeos-shell')!,legacy=document.getElementB
 const surface=params.get('surface')||'';
 const nativeSurfaces=new Set(['today','capture','practices','projects','review']);
 const escape=(x:string)=>x.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
-let loaded=false;
+let loaded=false;datePickers();
 async function start(){if(parent===window||!params.get('parentOrigin')){main.innerHTML='<section class="card"><h2>Delta LifeOS</h2><p>Откройте приложение через Delta.</p></section>';return}
  const host=await connectPlugin(params.get('parentOrigin')!);
  const settings=await host.call('lifeos.settings_get',{}) as {timezone:string};
