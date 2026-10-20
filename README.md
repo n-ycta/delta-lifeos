@@ -1,6 +1,6 @@
 # Delta LifeOS
 
-Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.2.0.
+Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.2.1.
 
 ## Included
 

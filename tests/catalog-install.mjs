@@ -20,7 +20,7 @@ try {
     item,
     "LifeOS must be visible in the actual public Core install catalog",
   );
-  assert.equal(item.version, "0.2.0");
+  assert.equal(item.version, "0.2.1");
   const plan = await stack.client.call("packages.plan", { id: item.id });
   assert.deepEqual(
     plan.items.map((i) => i.id),
