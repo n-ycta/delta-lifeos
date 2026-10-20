@@ -11,8 +11,8 @@ export async function freePort() {
   await new Promise((r) => s.close(r));
   return port;
 }
-export async function startStack({ includeVector = true } = {}) {
-  const home = await mkdtemp(join(tmpdir(), "delta-vector-live-")),
+export async function startStack({ includeLifeOS = true } = {}) {
+  const home = await mkdtemp(join(tmpdir(), "delta-lifeos-live-")),
     port = await freePort(),
     mcpPort = await freePort(),
     url = "http://127.0.0.1:" + port,
@@ -25,7 +25,7 @@ export async function startStack({ includeVector = true } = {}) {
     [
       "init",
       "--name",
-      "Vector acceptance",
+      "LifeOS acceptance",
       "--kind",
       "container",
       "--port",
@@ -82,18 +82,18 @@ export async function startStack({ includeVector = true } = {}) {
     await wait(async () =>
       (await client.call("core.components")).some((c) => c.id === "storage"),
     );
-    let vectorToken, vector;
-    if (includeVector) {
-      vectorToken = await token("dev.delta.vector", [
-        "register:vector",
+    let lifeosToken, lifeos;
+    if (includeLifeOS) {
+      lifeosToken = await token("dev.delta.lifeos", [
+        "register:lifeos",
         "call:storage.document_get",
         "call:storage.document_put",
       ]);
-      vector = start("vector", "node", ["server/main.mjs"], {
-        DELTA_TOKEN: vectorToken,
+      lifeos = start("lifeos", "node", ["server/main.mjs"], {
+        DELTA_TOKEN: lifeosToken,
       });
       await wait(async () =>
-        (await client.call("core.components")).some((c) => c.id === "vector"),
+        (await client.call("core.components")).some((c) => c.id === "lifeos"),
       );
     }
     start("mcp", "node", ["../delta-mcp/server/main.mjs"], {
@@ -113,16 +113,16 @@ export async function startStack({ includeVector = true } = {}) {
       token,
       stop,
       wait,
-      async restartVector() {
-        if (!vector) throw Error("Vector was not started by this test stack");
-        vector.kill("SIGKILL");
+      async restartLifeOS() {
+        if (!lifeos) throw Error("LifeOS was not started by this test stack");
+        lifeos.kill("SIGKILL");
         await new Promise((r) => setTimeout(r, 250));
-        vector = start("vector", "node", ["server/main.mjs"], {
-          DELTA_TOKEN: vectorToken,
+        lifeos = start("lifeos", "node", ["server/main.mjs"], {
+          DELTA_TOKEN: lifeosToken,
         });
         await wait(async () => {
           try {
-            return (await client.call("vector.status")).storage === "connected";
+            return (await client.call("lifeos.status")).storage === "connected";
           } catch {
             return false;
           }

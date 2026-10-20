@@ -1,5 +1,6 @@
 import { randomUUID, createHash } from "node:crypto";
 import { DeltaError, allowed } from "./delta-sdk.mjs";
+import { workspaceHandlers, syncNativeWorkspace } from './workspace.mjs';
 import { entities, specs } from "./contract.mjs";
 const fail = (code, message) => {
   throw new DeltaError(code, message);
@@ -228,7 +229,7 @@ function validate(type, data, partial = false) {
   if (type === "experiment" && data.from && data.to && data.to < data.from)
     fail("bad_request", "Invalid experiment range");
 }
-export async function createVector({
+export async function createLifeOS({
   persistence,
   now = () => new Date().toISOString(),
 } = {}) {
@@ -239,7 +240,7 @@ export async function createVector({
       revision: 1,
       timezone: "UTC",
       locale: "ru",
-      activeProjectLimit: 3,
+      activeProjectLimit: 0,
     },
     entities: Object.fromEntries(entities.map((e) => [e, {}])),
     requests: [],
@@ -326,13 +327,14 @@ export async function createVector({
       }
       const s = structuredClone(state),
         result = fn(s, now());
+      syncNativeWorkspace(s,state,op,result,now());
       s.revision++;
       s.requests.push({ id: args.requestId, principal, hash, result });
       s.requests = s.requests.slice(-64);
       if (Buffer.byteLength(JSON.stringify(s)) > 900000)
         fail(
           "capacity",
-          "Vector document limit reached; export and archive data",
+          "LifeOS document limit reached; export and archive data",
         );
       await persistence.save(s);
       state = s;
@@ -395,10 +397,10 @@ export async function createVector({
   };
   const h = {};
   for (const type of entities) {
-    h["vector." + type + "_list"] = (a) => page(type, a);
-    h["vector." + type + "_create"] = (a, c) =>
+    h["lifeos." + type + "_list"] = (a) => page(type, a);
+    h["lifeos." + type + "_create"] = (a, c) =>
       mutate(type + "_create", a, c, (s, at) => insert(s, type, a.data, at));
-    h["vector." + type + "_update"] = (a, c) =>
+    h["lifeos." + type + "_update"] = (a, c) =>
       mutate(type + "_update", a, c, (s, at) => {
         const x = find(s, type, a.id);
         revision(x, a);
@@ -430,7 +432,7 @@ export async function createVector({
         Object.assign(x, a.data, { revision: x.revision + 1, updatedAt: at });
         return x;
       });
-    h["vector." + type + "_delete"] = (a, c) =>
+    h["lifeos." + type + "_delete"] = (a, c) =>
       mutate(type + "_delete", a, c, (s, at) => {
         const x = find(s, type, a.id);
         revision(x, a);
@@ -443,7 +445,7 @@ export async function createVector({
       });
   }
   for (const done of [true, false])
-    h["vector.task_" + (done ? "complete" : "reopen")] = (a, c) =>
+    h["lifeos.task_" + (done ? "complete" : "reopen")] = (a, c) =>
       mutate(done ? "task_complete" : "task_reopen", a, c, (s, at) => {
         const x = find(s, "task", a.id);
         revision(x, a);
@@ -482,7 +484,7 @@ export async function createVector({
         }
         return x;
       });
-  h["vector.practice_log"] = (a, c) =>
+  h["lifeos.practice_log"] = (a, c) =>
     mutate("practice_log", a, c, (s, at) => {
       const p = find(s, "practice", a.id);
       return insert(
@@ -507,7 +509,7 @@ export async function createVector({
     )
       fail("bad_request", "Range must be 0–366 days");
   };
-  h["vector.calendar"] = (a) => {
+  h["lifeos.calendar"] = (a) => {
     range(a);
     const days = {};
     const add = (day, key) => {
@@ -524,7 +526,7 @@ export async function createVector({
     for (const x of readRows("entry")) add(x.date, "entries");
     return { days };
   };
-  h["vector.summary"] = (a) => {
+  h["lifeos.summary"] = (a) => {
     range(a);
     const entries = readRows("entry").filter(
       (x) => x.date >= a.from && x.date <= a.to,
@@ -550,14 +552,14 @@ export async function createVector({
         new Set(entries.map((x) => x.date)).size,
     };
   };
-  h["vector.status"] = () => ({
-    version: "0.1.0",
+  h["lifeos.status"] = () => ({
+    version: "0.2.0",
     revision: state.revision,
     storage: "connected",
     counts: Object.fromEntries(entities.map((e) => [e, readRows(e).length])),
   });
-  h["vector.settings_get"] = () => structuredClone(state.settings);
-  h["vector.settings_update"] = (a, c) =>
+  h["lifeos.settings_get"] = () => structuredClone(state.settings);
+  h["lifeos.settings_update"] = (a, c) =>
     mutate("settings_update", a, c, (s) => {
       revision(s.settings, a);
       if (
@@ -581,24 +583,25 @@ export async function createVector({
       if (
         own(a.data, "activeProjectLimit") &&
         (!Number.isInteger(a.data.activeProjectLimit) ||
-          a.data.activeProjectLimit < 1 ||
-          a.data.activeProjectLimit > 20)
+          a.data.activeProjectLimit < 0 ||
+          a.data.activeProjectLimit > 10000)
       )
         fail("bad_request", "Invalid project limit");
       Object.assign(s.settings, a.data, { revision: s.settings.revision + 1 });
       return s.settings;
     });
-  h["vector.export"] = (a) => {
+  h["lifeos.export"] = (a) => {
     if (!entities.includes(a.entity)) fail("bad_request", "Invalid entity");
     return {
       ...page(a.entity, a),
-      format: "delta-vector-v1",
+      format: "delta-lifeos-v1",
       entity: a.entity,
     };
   };
+  Object.assign(h,workspaceHandlers({getState:()=>state,mutate}));
   return Object.fromEntries(
     specs.map((spec) => {
-      const cap = "vector." + spec.name;
+      const cap = "lifeos." + spec.name;
       return [
         cap,
         async (a = {}, caller = {}) => {

@@ -1,12 +1,12 @@
 {
-  "name": "delta-vector",
-  "version": "0.1.0",
+  "name": "delta-lifeos",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
+    "dev": "node scripts/build-lifeos-runtime.mjs && vite --host 127.0.0.1",
+    "build": "node scripts/build-lifeos-runtime.mjs && tsc --noEmit && vite build",
     "start": "node server/main.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node tests/browser.mjs",

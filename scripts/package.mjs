@@ -26,18 +26,19 @@ await mkdir("release", { recursive: true });
 const app = Buffer.from(
   JSON.stringify({ format: "delta-app-v1", manifest: appManifest, files }),
 );
-await writeFile("release/delta-vector.delta-app", app);
+await writeFile("release/delta-lifeos.delta-app", app);
 const stage = "release/stage";
 await rm(stage, { recursive: true, force: true });
 await mkdir(stage, { recursive: true });
 await cp("server", stage + "/server", { recursive: true });
 await cp("dist", stage + "/dist", { recursive: true });
 await cp("LICENSE", stage + "/LICENSE");
+await cp("licenses",stage+"/licenses",{recursive:true});
 await cp("README.md", stage + "/README.md");
 await writeFile(stage + "/manifest.json", JSON.stringify(manifest, null, 2));
 const pkg = {
-  name: "delta-vector-service",
-  version: "0.1.0",
+  name: "delta-lifeos-service",
+  version: "0.2.0",
   type: "module",
   private: true,
   scripts: { start: "node server/main.mjs" },
@@ -53,7 +54,7 @@ await writeFile(
     packages: { "": pkg },
   }),
 );
-execFileSync("tar", ["-czf", "release/delta-vector.tar.gz", "-C", stage, "."]);
+execFileSync("tar", ["--sort=name","--mtime=@0","--owner=0","--group=0","--numeric-owner","-czf", "release/delta-lifeos.tar.gz", "-C", stage, "."]);
 await writeFile(
   "release/plugin-manifest.json",
   JSON.stringify(manifest, null, 2),
@@ -65,9 +66,9 @@ await writeFile(
 await writeFile(
   "release/SHA256SUMS",
   sha(app) +
-    "  delta-vector.delta-app\n" +
-    sha(await readFile("release/delta-vector.tar.gz")) +
-    "  delta-vector.tar.gz\n",
+    "  delta-lifeos.delta-app\n" +
+    sha(await readFile("release/delta-lifeos.tar.gz")) +
+    "  delta-lifeos.tar.gz\n",
 );
 await rm(stage, { recursive: true, force: true });
 console.log(

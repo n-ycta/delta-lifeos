@@ -1,19 +1,32 @@
-# Delta Vector
+# Delta LifeOS
 
-A plugin-first personal workspace for tasks, journal, calendar, practices, projects and skill evidence. No built-in AI, MCP listener, XP, streak penalties or automatic psychological scoring.
+Delta plugin/application replacing Delta Vector. Component: `lifeos`. Plugin/UI identity: `dev.delta.lifeos`. Version: 0.2.0.
 
-## Status
+## Included
 
-Version 0.1.0 is an initial implementation. Source publication is not an installed or published official catalog release. The UI requires the matching host changes linked in `docs/INTEGRATION.md`. Installing this source does not update existing Web/Desktop/Android binaries.
+- Journal: Markdown/YAML entries, 13 custom field types, scheduled field/template assignment, ZIP import/export.
+- Tasks and recurring habits: deadlines, priorities, categories, transfers, exceptions, configurable optional rewards and penalties in diamonds.
+- Skills: arbitrary nesting, 3–100 achievement criteria, custom levels, evidence/history, canvas and tree views. No percentage-based skill level.
+- Time: interactive 24-hour planner, base/weekday templates and isolated date exceptions.
+- Calendar, balance/statistics, profile and activity.
+- Existing Vector functions retained: quick capture, practices (including sleep/activity/learning logs), projects, directions, experiments and skill evidence. Tasks and skills share the same backend entities between the application and native widgets.
+- Thirteen declared composable surfaces: today, capture, tasks, journal, calendar, practices, projects, skills, review, habits, planner, rewards, statistics.
+
+No decorative slogans. Theme, typography, controls and radii come from the actual `@delta/ui` SDK and host theme tokens, including Mocha/Latte/Gruvbox/Tokyo. Icons use Phosphor; currency uses a faceted gemstone, not a plain rhombus.
 
 ## Runtime
 
-- Delta Core >=0.4.3 <0.5.0.
-- Node.js >=22.12 (24 recommended).
-- Delta Storage >=0.4.0 on the selected service node.
-- A compatible Delta UI/Web host with explicit Vector grants (see `docs/INTEGRATION.md`).
+Node.js >=22.12 (24 recommended), Delta Core >=0.4.3 <0.5.0, Delta Storage >=0.4.0. The Web/native host must include the LifeOS broker allowlist and UI catalog update. Publishing source alone does not update an installed host.
 
-Run one Vector service per selected data store: it serializes changes and owns its Storage document. Multiple UI surfaces and clients share that service. This is a single-owner service, not a multi-tenant database or an offline replication engine. Core peer trust is the security boundary; pairing does not preserve an end-user identity across peers.
+The process registers `lifeos.*` capabilities with Core; the UI receives only exact broker grants through the origin/channel-pinned Plugin SDK. No Core owner token, GitHub token or native IPC credential enters an iframe. Backend persistence is authoritative; local browser storage is only a last-saved cache. A stale write is rejected with a revision conflict, never silently merged over another client.
+
+## Migration from Vector
+
+The Git repository is renamed, not deleted: commit history is preserved. `delta_vector/state` is copied to `delta_lifeos_backup/state` and then `delta_lifeos/state` on first load. The original namespace is left intact. File mode similarly preserves `vector.json` and `vector.pre-lifeos.json` before creating `lifeos.json`. Tasks, skills and existing entry IDs are retained. Existing user-defined criteria and LifeOS settings reside alongside the retained Vector entities.
+
+Install LifeOS against the same authoritative Storage as Vector. Stop the old Vector service before actively editing the migrated data; simultaneous old/new services are not a replication mechanism. Verify LifeOS, then remove the old runtime. Do not delete the old data namespace. Host workbench identity migration preserves layout/surface settings and keeps a pre-migration browser backup.
+
+For existing standalone LifeOS data, use its ZIP export and the LifeOS profile import. Import is explicit; the plugin never silently replaces server data with browser-local state.
 
 ## Development
 
@@ -25,63 +38,20 @@ npm run dev
 npm run package:plugin
 ```
 
-The source includes `vendor/delta-ui-sdk.tgz`, a reviewed local snapshot of the actual shared SDK plus the accompanying SDK export changes. This is not a published upstream SDK version. `scripts/vendor-sdk.mjs` can regenerate it from a sibling Delta UI checkout after applying the handoff patch. Building the plugin itself does not require a sibling checkout.
+Open the app through a Delta host. A top-level standalone plugin window intentionally asks for Delta; it does not create a separate local dataset. `LIFEOS_STORAGE=file DATA_DIR=/path node server/main.mjs` selects explicit development file persistence; default mode uses Delta Storage. Core connection comes from `DELTA_URL` and the service-scoped `DELTA_TOKEN` provisioned by the host.
 
-The standalone UI intentionally shows a connection instruction; it does not silently create a second local dataset. Open it through a Delta host. For end-to-end development, place `delta-ui`, `delta_db`, `delta-mcp` and this repository as siblings, install their dependencies, and run:
+`npm run package:plugin` emits `delta-lifeos.tar.gz` (process + UI) and `delta-lifeos.delta-app` (portable app), manifests and SHA256SUMS. Runtime libraries are bundled; no npm install is required for the installed process package.
 
-```sh
-CORE_BINARY=/path/to/delta npm run test:integration
-CORE_BINARY=/path/to/delta CHROMIUM_PATH=/path/to/chromium npm run test:browser
-```
+## Verification
 
-These commands create disposable Core/Storage/MCP profiles and real service calls. The test host's loopback API proxy is test-only; never deploy it publicly. Browser tests use the real UI channel and a test parent rather than claiming released-host installation coverage.
+`npm test`: service compatibility, revisions/idempotency, workspace upload validation, shared entity projections, durable restart, data migration and scoped denial.
 
-Catalog acceptance additionally requires a sibling `delta-web` checkout with its dependencies installed and the current shared UI checkout (including `tests/catalog-console.fixture.tsx`):
+`npm run test:browser`: actual shared SDK origin/channel fixture with the real durable LifeOS service, responsive application/views and widget surfaces. This is a host fixture, not a claim about every installed deployment or physical phone.
 
-```sh
-CORE_BINARY=/path/to/delta CHROMIUM_PATH=/path/to/chromium npm run test:catalog
-```
+`CORE_BINARY=/path/to/delta npm run test:integration`: real Core registration/routing, real Storage, service restart, MCP discovery, scoped task calls and journal denial/revocation. Requires sibling checkouts of `delta_db` and `delta-mcp`.
 
-This test downloads the actual public Core registry and published service/UI release, verifies installation through the real Core and Web installers, and opens the released isolated iframe inside the real Console. It writes a journal entry through the real Web broker/Core/Storage, adds a Calendar widget, saves its dashboard through the production Web handlers, and verifies reload at desktop and mobile widths. The Console source is served by Vite; this is not a physical-device or installed-host-release test. All credentials and data belong to the disposable test stack. The acceptance-only loopback gateway must never be exposed publicly.
+## Storage boundaries
 
+Each diary entry is a Markdown document in the workspace and becomes a separate `.md` in ZIP export. The backend uses the current Delta Storage document contract (the inherited document capacity is enforced), not browser-local authority. Workspace uploads are chunked under bridge request limits, checksummed, revision-checked and committed atomically to Storage. Interrupted uploads never replace the workspace. Optional browser folder export still requires a user-selected folder and browser support.
 
-## Service
-
-`server/main.mjs` uses supervisor-provided `DELTA_URL` / `DELTA_TOKEN`. Scopes: `register:vector`, `call:storage.document_get`, `call:storage.document_put`. Keep the service token private; it never enters plugin frames. `STORAGE_COMPONENT` defaults to `storage`; optional `STORAGE_NODE` chooses an existing reachable storage node. File persistence is explicit with `VECTOR_STORAGE=file` and `DATA_DIR`; it is intended for development or an intentional standalone deployment, never an automatic fallback on Storage failure.
-
-State is persisted in one owner-isolated Storage document (`delta_vector/state`). The owner is the stable service principal. Changing its token **name**, principal kind or peer route changes that storage identity. Keep token names stable during upgrades. Only Vector should write this document.
-
-## Functionality
-
-- Tasks: inbox, planned, doing, done/cancelled; schedule separate from deadline; estimate, checklist and recurrence (`days`, `missed: skip|carry`). Complete/reopen capabilities are separate from generic editing. Completing a repeating task creates one next occurrence. Remove that occurrence before reopening its parent to avoid duplicates.
-- Journal: free text, typed observations, numeric values, intervals, time zone and source. Local drafts remain on this browser; they are not a backup.
-- Practices: configurable type, unit, minimum step, target and weekday metadata; log into the same journal. Scheduling metadata is not an OS reminder service.
-- Projects/directions/experiments: basic CRUD and project limit advisory.
-- Skills: linked evidence and neutral assistance labels (independent, hint, generated, reproduced).
-- Calendar: monthly overview and selected-day plan versus recorded observations.
-- Review: exact counts for 14 days, with absent records labeled unknown.
-- Surfaces: today, capture, tasks, journal, calendar, practices, projects, skills, review. Theme tokens and typography apply through `@delta/ui/sdk/client`; panels, buttons and fields use `@delta/ui/sdk/styles.css`; select behavior uses `@delta/ui/sdk/controls`; all interface icons use official Phosphor assets through `@delta/ui/sdk/icons`. Fonts are bundled, RU/EN provided.
-- Export: paginated per-entity JSON via API and UI. No credentials in exports.
-
-## API and security
-
-The complete capability schemas are generated from `server/contract.mjs`; each method is independently scoped. `vector.entry_list`, `vector.summary`, `vector.calendar` and `vector.export` can expose private observations; grant them separately. Do not grant an agent `vector.*` if it only needs tasks. List pages allow at most 20 items and stay below 44 KB of rows. UI does not receive Core tokens or arbitrary-node authority.
-
-Mutations require a stable `requestId`. Updates/deletes and task completion/reopening require the current entity `revision`. Duplicate successful requests return their cached original result; changing arguments under the same request ID fails. Idempotency cache is bounded to 64 successful requests; clients must not replay arbitrarily old creates. UI retains a request ID across an ambiguous failure for identical input.
-
-Deletes leave content-free tombstones. Completed tasks are facts used by the journal/review layer, not duplicated diary writes. Missing data is not failure; assistance is not a moral score.
-
-## Initial limits
-
-- One serialized service writer; no cross-process compare-and-swap in Storage.
-- State cap 900 KB, including tombstones and request cache; capacity fails explicitly without discarding data. This release is for small personal deployments. Automatic archive/compaction and scalable per-entity Storage indexing are not implemented.
-- Lists show loaded pages, with Load more. Filters are explicit; summary/calendar counts are computed from the service state, not a client sample.
-- No offline writes, background notifications, workout programming, spaced repetition, external health imports, Media activity imports, drag-to-reschedule, arbitrary saved widget filters or automatic agent inference.
-- Weekday/target practice fields are editable metadata, not an automatically enforced training schedule.
-- Two different surfaces can run simultaneously on the inspected host; repeated slots of the same surface use the host's shared-frame semantics.
-
-## Release
-
-`npm run package:plugin` builds `release/delta-vector.delta-app` and `release/delta-vector.tar.gz` plus manifests and `SHA256SUMS`. Publish tested assets before registering their real URLs/checksums. Do not insert speculative release URLs in production registries. The supplied workflow publishes tag builds, but CI success and host rollout must be verified separately.
-
-Apache-2.0. Delta SDK is reused under the same license; fonts retain their packaged OFL notices.
+Rules are optional, project-limit warnings can be disabled with 0, and skill progression is manual by default. Background browser closure is not a scheduler: overdue checks run when the app is open. No built-in AI scorer, cloud replication or automatic external verification of evidence is claimed.

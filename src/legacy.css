@@ -1,7 +1,7 @@
-/* Vector layout only. Controls, typography, panels and theme rules come from @delta/ui/sdk/styles.css. */
+/* LifeOS layout only. Controls, typography, panels and theme rules come from @delta/ui/sdk/styles.css. */
 html,
 body,
-#app {
+#vector-app {
   min-height: 100%;
   height: auto;
 }
@@ -38,13 +38,13 @@ svg {
   flex-direction: column;
   gap: 1px;
 }
-.vector-logo {
+.lifeos-logo {
   width: 22px;
   height: 22px;
   display: grid;
   place-items: center;
 }
-.vector-logo svg {
+.lifeos-logo svg {
   width: 22px;
   height: 22px;
   color: var(--ink);

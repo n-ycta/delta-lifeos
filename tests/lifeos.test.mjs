@@ -3,21 +3,21 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createVector, localDate } from "../server/vector.mjs";
+import { createLifeOS, localDate } from "../server/lifeos.mjs";
 import { filePersistence } from "../server/persistence.mjs";
 import { capabilities, manifest, appManifest } from "../server/contract.mjs";
 const owner = { kind: "token", name: "owner", scopes: ["admin"] };
 let seq = 0;
 async function setup(fn) {
-  const dir = await mkdtemp(join(tmpdir(), "vector-"));
+  const dir = await mkdtemp(join(tmpdir(), "lifeos-"));
   try {
     const persistence = filePersistence(dir),
-      h = await createVector({
+      h = await createLifeOS({
         persistence,
         now: () => "2026-10-17T13:35:00.000Z",
       });
     const call = (op, a = {}, c = owner) =>
-      h["vector." + op](
+      h["lifeos." + op](
         {
           ...a,
           ...(!op.endsWith("_list") &&
@@ -61,12 +61,12 @@ test("task lifecycle, optimistic conflicts, durable restart and completion facts
         .completed,
       1,
     );
-    const h = await createVector({ persistence });
+    const h = await createLifeOS({ persistence });
     assert.equal(
-      (await h["vector.task_list"]({}, owner)).items[0].status,
+      (await h["lifeos.task_list"]({}, owner)).items[0].status,
       "done",
     );
-    assert.equal((await stat(join(dir, "vector.json"))).mode & 0o777, 0o600);
+    assert.equal((await stat(join(dir, "lifeos.json"))).mode & 0o777, 0o600);
     assert.equal(
       (await call("task_reopen", { id: x.id, revision: 3 })).status,
       "inbox",
@@ -97,8 +97,8 @@ test("idempotency persists across restart and prevents duplicate recurrence", ()
       p.items.find((y) => y.id === done.nextOccurrenceId).scheduledDate,
       "2026-10-18",
     );
-    const h = await createVector({ persistence });
-    assert.equal((await h["vector.task_create"](args, owner)).id, x.id);
+    const h = await createLifeOS({ persistence });
+    assert.equal((await h["lifeos.task_create"](args, owner)).id, x.id);
     await assert.rejects(call("task_reopen", { id: x.id, revision: 2 }), {
       code: "conflict",
     });
@@ -108,7 +108,7 @@ test("scoped agent can create tasks but cannot read journal, delete or change se
     const agent = {
       kind: "token",
       name: "agent",
-      scopes: ["call:vector.task_create"],
+      scopes: ["call:lifeos.task_create"],
     };
     await call("task_create", { data: { title: "Allowed" } }, agent);
     for (const op of [
@@ -173,7 +173,7 @@ test("serialized writes reject stale revisions and failed saves never report suc
       call("task_update", { id: x.id, revision: 1, data: { title: "C" } }),
     ]);
     assert.equal(r.filter((x) => x.status === "fulfilled").length, 1);
-    const h = await createVector({
+    const h = await createLifeOS({
       persistence: {
         load: async () => null,
         save: async () => {
@@ -182,9 +182,9 @@ test("serialized writes reject stale revisions and failed saves never report suc
       },
     });
     await assert.rejects(
-      h["vector.task_create"]({ data: { title: "A" }, requestId: "a" }, owner),
+      h["lifeos.task_create"]({ data: { title: "A" }, requestId: "a" }, owner),
     );
-    assert.equal((await h["vector.task_list"]({}, owner)).total, 0);
+    assert.equal((await h["lifeos.task_list"]({}, owner)).total, 0);
   }));
 test("deletion tombstones cannot be resurrected by a stale client", () =>
   setup(async ({ call }) => {
@@ -243,13 +243,13 @@ test("cyclic parent links and direct completion bypass are rejected", () =>
   }));
 test("invalid or future state is not silently overwritten", () =>
   setup(async ({ persistence, dir }) => {
-    await writeFile(join(dir, "vector.json"), "{");
-    await assert.rejects(createVector({ persistence }));
+    await writeFile(join(dir, "lifeos.json"), "{");
+    await assert.rejects(createLifeOS({ persistence }));
     await writeFile(
-      join(dir, "vector.json"),
+      join(dir, "lifeos.json"),
       JSON.stringify({ version: 99, entities: {} }),
     );
-    await assert.rejects(createVector({ persistence }), {
+    await assert.rejects(createLifeOS({ persistence }), {
       code: "incompatible",
     });
   }));

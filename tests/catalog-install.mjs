@@ -7,20 +7,20 @@ import { createServer, request } from "node:http";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createApps } from "../../delta-web/server/apps.mjs";
-const stack = await startStack({ includeVector: false });
+const stack = await startStack({ includeLifeOS: false });
 try {
   let item;
   for (let attempt = 0; attempt < 60; attempt++) {
     const catalog = await stack.client.call("packages.catalog");
-    item = catalog.plugins.find((p) => p.id === "dev.delta.vector");
+    item = catalog.plugins.find((p) => p.id === "dev.delta.lifeos");
     if (item) break;
     await new Promise((r) => setTimeout(r, 3000));
   }
   assert(
     item,
-    "Vector must be visible in the actual public Core install catalog",
+    "LifeOS must be visible in the actual public Core install catalog",
   );
-  assert.equal(item.version, "0.1.0");
+  assert.equal(item.version, "0.2.0");
   const plan = await stack.client.call("packages.plan", { id: item.id });
   assert.deepEqual(
     plan.items.map((i) => i.id),
@@ -40,19 +40,19 @@ try {
     await new Promise((r) => setTimeout(r, 1000));
   }
   assert.equal(job?.status, "complete", JSON.stringify(job?.error || {}));
-  assert.equal((await stack.client.call("vector.status")).storage, "connected");
-  const task = await stack.client.call("vector.task_create", {
+  assert.equal((await stack.client.call("lifeos.status")).storage, "connected");
+  const task = await stack.client.call("lifeos.task_create", {
     requestId: crypto.randomUUID(),
     data: { title: "Installed from the official catalog" },
   });
-  const entry = await stack.client.call("vector.entry_create", {
+  const entry = await stack.client.call("lifeos.entry_create", {
     requestId: crypto.randomUUID(),
     data: { text: "Catalog installation acceptance" },
   });
-  await stack.client.call("supervisor.restart", { id: "vector" });
+  await stack.client.call("supervisor.restart", { id: "lifeos" });
   await stack.wait(async () => {
     try {
-      return (await stack.client.call("vector.task_list")).items.some(
+      return (await stack.client.call("lifeos.task_list")).items.some(
         (t) => t.id === task.id,
       );
     } catch {
@@ -60,7 +60,7 @@ try {
     }
   });
   assert(
-    (await stack.client.call("vector.entry_list")).items.some(
+    (await stack.client.call("lifeos.entry_list")).items.some(
       (e) => e.id === entry.id,
     ),
   );
@@ -106,7 +106,7 @@ try {
     const installed = await api("install", {});
     assert.equal(installed.status, 200);
     const ui = (await (await api("list")).json()).find((a) => a.id === item.id);
-    assert.equal(ui.ui.surfaces.length, 9);
+    assert.equal(ui.ui.surfaces.length, 13);
     const launched = await (await api("launch", {})).json();
     const entry = await new Promise((resolve, reject) => {
       request(
@@ -127,7 +127,7 @@ try {
     });
     assert.equal(entry.status, 200);
     assert(entry.text.includes("index-"));
-    const tasks = await api("call", { capability: "vector.task_list" });
+    const tasks = await api("call", { capability: "lifeos.task_list" });
     assert.equal(tasks.status, 200);
     assert((await tasks.json()).items.some((t) => t.id === task.id));
     assert.equal(
@@ -140,14 +140,14 @@ try {
     await new Promise((r) => apps.staticServer.close(r));
   }
   console.log(
-    "PASS published UI catalog → real Web app installer → released checksum-verified UI → nine surfaces and isolated launch assets → Web broker → installed Vector service; admin capability denied.",
+    "PASS published UI catalog → real Web app installer → released checksum-verified UI → thirteen surfaces and isolated launch assets → Web broker → installed LifeOS service; admin capability denied.",
   );
   console.log(
     "PASS actual public Core catalog → dependency plan → verified GitHub release installation → supervisor registration → tasks/journal → durable Storage after supervisor restart.",
   );
 } finally {
   await stack.client
-    .call("supervisor.remove", { id: "vector", force: true })
+    .call("supervisor.remove", { id: "lifeos", force: true })
     .catch(() => {});
   await stack.stop();
 }

@@ -49,7 +49,7 @@ export const words = {
     retry: "Повторить",
     connection: "Не удалось связаться с сервисом. Введённое не потеряно.",
     connect:
-      "Откройте Vector через Delta. Для работы нужен установленный сервис Vector.",
+      "Откройте LifeOS через Delta. Для работы нужен установленный сервис LifeOS.",
     loading: "Подключение…",
     error: "Не удалось выполнить действие. Проверьте соединение и повторите.",
     conflict:
@@ -80,7 +80,7 @@ export const words = {
     end: "Конец",
     timezone: "Часовой пояс",
     language: "Язык",
-    limit: "Лимит активных проектов",
+    limit: "Лимит активных проектов (0 — выключен)",
     useTimezone: "Использовать часовой пояс устройства",
     period: "Период",
     prev: "Назад",
@@ -104,7 +104,7 @@ export const words = {
     exportHint:
       "Экспортируются все страницы выбранного раздела, без учётных данных.",
     exportType: "Раздел",
-    subtitle: "Не больше дел. Больше ясности.",
+    subtitle: "",
     choose: "Выбрать",
     todayEmpty: "Выбери небольшой следующий шаг. Не нужно заполнять весь день.",
     plan: "На сегодня",
@@ -180,7 +180,7 @@ export const words = {
     more: "Load more",
     retry: "Retry",
     connection: "Cannot reach the service. Your input has been kept.",
-    connect: "Open Vector through Delta. The Vector service must be installed.",
+    connect: "Open LifeOS through Delta. The LifeOS service must be installed.",
     loading: "Connecting…",
     error: "The action failed. Check your connection and retry.",
     conflict: "This item changed. Refresh before editing again.",
@@ -210,7 +210,7 @@ export const words = {
     end: "End",
     timezone: "Time zone",
     language: "Language",
-    limit: "Active project limit",
+    limit: "Active project limit (0 — off)",
     useTimezone: "Use device time zone",
     period: "Period",
     prev: "Previous",
@@ -234,7 +234,7 @@ export const words = {
     exportHint:
       "Exports every page of the selected section, without credentials.",
     exportType: "Section",
-    subtitle: "Not more tasks. More clarity.",
+    subtitle: "",
     choose: "Choose",
     todayEmpty: "Choose a small next action. There is no need to fill the day.",
     plan: "Today’s plan",

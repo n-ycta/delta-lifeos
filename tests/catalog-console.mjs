@@ -24,7 +24,7 @@ export async function verifyCatalogConsole(stack, api) {
   };
   const webCall = (capability, args = {}) => handlers[capability](args, caller);
   const root = fileURLToPath(new URL("../../delta-ui", import.meta.url));
-  const output = process.env.QA_DIR || "/data/vector-catalog-qa";
+  const output = process.env.QA_DIR || "/data/lifeos-catalog-qa";
   await mkdir(output, { recursive: true });
   const server = await createServer({
     root,
@@ -54,7 +54,7 @@ export async function verifyCatalogConsole(stack, api) {
                   throw Object.assign(Error(value.error), {
                     code: value.error,
                   });
-              } else if (r.capability.startsWith("vector.")) {
+              } else if (r.capability.startsWith("lifeos.")) {
                 const result = await api("call", {
                   capability: r.capability,
                   args: r.args || {},
@@ -110,16 +110,16 @@ export async function verifyCatalogConsole(stack, api) {
         `http://127.0.0.1:${server.httpServer.address().port}/__accept#/dashboards`,
       );
       const card = page.locator(
-        'a.plug[href="#/dashboards/gen_ui_dev.delta.vector"]',
+        'a.plug[href="#/dashboards/gen_ui_dev.delta.lifeos"]',
       );
       await card.waitFor();
       await card.click();
       const frame = page
-        .frameLocator('iframe[title="dev.delta.vector"]')
+        .frameLocator('iframe[title="dev.delta.lifeos"]')
         .first();
       try {
         await frame
-          .locator("html[data-vector-connected=true]")
+          .locator("html[data-lifeos-connected=true]")
           .waitFor({ timeout: 30000 });
       } catch (e) {
         await page.screenshot({ path: output + "/failure.png" });
@@ -137,7 +137,7 @@ export async function verifyCatalogConsole(stack, api) {
       await frame.locator("#capture-text").fill(text);
       await frame.locator("#capture-form button[type=submit]").click();
       await stack.wait(async () =>
-        (await stack.client.call("vector.entry_list")).items.some(
+        (await stack.client.call("lifeos.entry_list")).items.some(
           (e) => e.text === text,
         ),
       );
@@ -150,8 +150,8 @@ export async function verifyCatalogConsole(stack, api) {
       await drawer.waitFor();
       const panel = drawer
         .locator(".panel")
-        .filter({ hasText: "Delta Vector" });
-      assert.equal(await panel.locator(".viz-option").count(), 10);
+        .filter({ hasText: "Delta LifeOS" });
+      assert.equal(await panel.locator(".viz-option").count(), 14);
       await panel
         .getByRole("button", { name: "Calendar", exact: true })
         .click();
@@ -160,17 +160,17 @@ export async function verifyCatalogConsole(stack, api) {
       await page.reload();
       await page.locator(".dx-widget-app").nth(1).waitFor();
       const saved = (await webCall("web.dashboards_list")).find(
-        (d) => d.id === "gen_ui_dev.delta.vector",
+        (d) => d.id === "gen_ui_dev.delta.lifeos",
       );
       assert(saved.widgets.some((w) => w.display.surface === "calendar"));
       assert.equal(saved.widgets.length, 2);
       assert.deepEqual(errors, []);
       await page.close();
       // The next viewport must start from the same uncustomized generated starter.
-      await webCall("web.dashboards_delete", { id: "gen_ui_dev.delta.vector" });
+      await webCall("web.dashboards_delete", { id: "gen_ui_dev.delta.lifeos" });
     }
     console.log(
-      "PASS real Console → automatic Vector dashboard → published isolated iframe → actual journal write through Web broker/Core/Storage; Calendar widget add/save/reload at 1440 and 390px.",
+      "PASS real Console → automatic LifeOS dashboard → published isolated iframe → actual journal write through Web broker/Core/Storage; Calendar widget add/save/reload at 1440 and 390px.",
     );
   } finally {
     await browser.close();

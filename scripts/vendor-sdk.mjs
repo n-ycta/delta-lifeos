@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 const ui = resolve(process.env.DELTA_UI_SOURCE || "../delta-ui"),
-  temp = await mkdtemp(join(tmpdir(), "vector-sdk-"));
+  temp = await mkdtemp(join(tmpdir(), "lifeos-sdk-"));
 try {
   const dir = join(temp, "package");
   await mkdir(dir, { recursive: true });
@@ -27,7 +27,7 @@ try {
     join(dir, "package.json"),
     JSON.stringify({
       name: "@delta/ui",
-      version: "0.3.2-vector.1",
+      version: "0.3.2-lifeos.1",
       type: "module",
       private: true,
       license: "Apache-2.0",

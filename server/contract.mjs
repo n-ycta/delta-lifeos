@@ -96,7 +96,13 @@ export const specs = [
     params: { entity: { ...str, required: true }, cursor: str, limit: num },
   },
 ];
-export const capabilities = specs.map((s) => "vector." + s.name);
+specs.push(
+ {name:'workspace_read',params:{offset:num,revision:num}},
+ {name:'workspace_begin',params:{revision:{...num,required:true},parts:{...num,required:true},sha256:{...str,required:true}}},
+ {name:'workspace_chunk',params:{uploadId:{...str,required:true},index:{...num,required:true},data:{...str,required:true}}},
+ {name:'workspace_commit',params:{uploadId:{...str,required:true},revision:{...num,required:true},requestId:{...str,required:true}}},
+);
+export const capabilities = specs.map((s) => "lifeos." + s.name);
 export const surfaces = [
   ["today", "Today", "Сегодня", "sun"],
   ["capture", "Quick capture", "Быстрая запись", "plus-circle"],
@@ -107,6 +113,10 @@ export const surfaces = [
   ["projects", "Projects", "Проекты", "stack"],
   ["skills", "Skills", "Навыки", "graduation-cap"],
   ["review", "Review", "Обзор", "compass"],
+ ["habits","Habits","Привычки","repeat"],
+ ["planner","Time planner","Планировщик","clock"],
+ ["rewards","Rewards","Награды","sketch-logo"],
+ ["statistics","Statistics","Статистика","chart-bar"],
 ].map(([id, en, ru, icon]) => ({
   id,
   name: { en, ru },
@@ -117,22 +127,22 @@ export const surfaces = [
   instance: "shared",
 }));
 export const manifest = {
-  id: "vector",
-  version: "0.1.0",
-  description: "Self-directed tasks, journal, calendar and practices",
+  id: "lifeos",
+  version: "0.2.0",
+  description: "Tasks, journal, skills, time, projects and practices",
   capabilities: specs.map((s) => ({
     ...s,
-    description: "Vector " + s.name.replaceAll("_", " "),
+    description: "LifeOS " + s.name.replaceAll("_", " "),
     admin: false,
   })),
   metadata: {
     ui: {
-      id: "dev.delta.vector",
-      name: "Delta Vector",
-      version: "0.1.0",
+      id: "dev.delta.lifeos",
+      name: "Delta LifeOS",
+      version: "0.2.0",
       contract: "^1.5.0",
       publisher: "Delta",
-      description: "Tasks, journal and practices without streak pressure.",
+      description: "Tasks, journal, skills and time.",
       icon: "compass",
       category: "productivity",
       runtime: {
@@ -156,13 +166,13 @@ export const manifest = {
       ],
       permissions: [
         {
-          scope: "register:vector",
-          reason: "Register the Vector service",
+          scope: "register:lifeos",
+          reason: "Register the LifeOS service",
           optional: false,
         },
         ...["document_get", "document_put"].map((x) => ({
           scope: "call:storage." + x,
-          reason: "Persist service-owned Vector documents",
+          reason: "Persist service-owned LifeOS documents",
           optional: false,
         })),
       ],
@@ -171,17 +181,17 @@ export const manifest = {
       actions: [{ id: "status", label: "Status" }],
       localizations: {
         ru: {
-          name: "Delta Vector",
-          description: "Задачи, дневник и практики без давления серий.",
+          name: "Delta LifeOS",
+          description: "Задачи, дневник, навыки и время.",
         },
       },
     },
   },
 };
 export const appManifest = {
-  id: "dev.delta.vector",
-  name: "Delta Vector",
-  version: "0.1.0",
+  id: "dev.delta.lifeos",
+  name: "Delta LifeOS",
+  version: "0.2.0",
   entry: "index.html",
   runtime: {
     execution: "web",

@@ -9,7 +9,7 @@ const q = new URLSearchParams(location.search),
 const parts = q.get("multi") ? ["today", "journal"] : [q.get("surface") || ""];
 for (const surface of parts) {
   const iframe = document.createElement("iframe");
-  iframe.title = "Vector " + surface;
+  iframe.title = "LifeOS " + surface;
   iframe.style.cssText = `display:block;border:0;width:100%;height:${parts.length > 1 ? "700px" : "100vh"}`;
   const url = new URL(plugin);
   url.searchParams.set("parentOrigin", location.origin);
@@ -46,7 +46,7 @@ for (const surface of parts) {
           type: "delta:initialize",
           channel: broker.channel,
           context: {
-            appId: "dev.delta.vector",
+            appId: "dev.delta.lifeos",
             surface: surface || undefined,
             language: lang,
             theme: skin.scheme,
